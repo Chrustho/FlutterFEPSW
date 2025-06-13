@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   // Endpoint Keycloak
   static const _baseUrl =
-      'http://localhost:8080/auth/realms/album-realm/protocol/openid-connect';
+      'http://localhost:8080/realms/ProgettoPSW/protocol/openid-connect';
   static const _clientId = 'album-app';
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
@@ -13,24 +14,33 @@ class AuthService {
   /// Effettua il login con Resource Owner Password Credentials (ROP grant).
   /// Se va a buon fine salva access & refresh token in storage.
   Future<bool> login(String username, String password) async {
-    final resp = await http.post(
-      Uri.parse('$_baseUrl/token'),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: {
-        'grant_type': 'password',
-        'client_id': _clientId,
-        'username': username,
-        'password': password,
-      },
-    );
+    try {
+      final resp = await http.post(
+        // ⚠️ ATTENZIONE: su Keycloak 18+ di solito NON c’è più il prefisso /auth
+        Uri.parse('$_baseUrl/token'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'grant_type': 'password',
+          'client_id': _clientId,
+          'username': username,
+          'password': password,
+        },
+      );
 
-    if (resp.statusCode == 200) {
-      final data = json.decode(resp.body);
-      await _storage.write(key: 'access_token', value: data['access_token']);
-      await _storage.write(key: 'refresh_token', value: data['refresh_token']);
-      return true;
+      if (resp.statusCode == 200) {
+        final data = json.decode(resp.body);
+        await _storage.write(key: 'access_token', value: data['access_token']);
+        await _storage.write(key: 'refresh_token', value: data['refresh_token']);
+        return true;
+      } else {
+        // logga il body per capire l’errore
+        debugPrint('Login error: ${resp.statusCode} → ${resp.body}');
+        return false;
+      }
+    } catch (e) {
+      debugPrint('Login exception: $e');
+      return false;
     }
-    return false;
   }
 
   /// Restituisce l'access token corrente, o null se non loggato.

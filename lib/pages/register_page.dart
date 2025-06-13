@@ -6,7 +6,7 @@ class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
   static const _kcRegisterUrl =
-      'http://localhost:8080/auth/realms/album-realm/protocol/openid-connect/registrations?client_id=album-app';
+      'http://localhost:8080/realms/ProgettoPSW/protocol/openid-connect/registrations?client_id=album-app';
 
   Future<void> _openRegistration() async {
     if (await canLaunch(_kcRegisterUrl)) {

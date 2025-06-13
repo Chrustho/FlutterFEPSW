@@ -20,13 +20,30 @@ class _LoginPageState extends State<LoginPage> {
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState!.save();
-    setState(() => _loading = true);
-    final ok = await _auth.login(_username, _password);
-    setState(() => _loading = false);
-    if (ok) {
-      Navigator.pushReplacementNamed(context, Routes.albums);
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
+    final success = await _auth.login(_username, _password);
+
+    // Qualunque cosa accada, disabilitiamo il loading spinner
+    setState(() {
+      _loading = false;
+    });
+
+    if (success) {
+      // Rimuoviamo tutta la stack e navighiamo a Albums
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        Routes.albums,
+            (route) => false,
+      );
     } else {
-      setState(() => _error = 'Credenziali errate o server non raggiungibile.');
+      setState(() {
+        _error = 'Login fallito: controlla credenziali o reachabilità Keycloak';
+      });
     }
   }
 
