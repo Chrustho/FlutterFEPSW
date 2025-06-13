@@ -1,0 +1,34 @@
+name: album_reviews_app
+description: Frontend Flutter per recensioni di album con Keycloak + Spring
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Material Icons
+  cupertino_icons: ^1.0.2
+
+  # HTTP client per chiamate REST
+  http: ^0.13.5
+
+  # Secure storage per i token Keycloak
+  flutter_secure_storage: ^8.0.0
+
+  # Per aprire il browser alla registrazione Keycloak
+  url_launcher: ^6.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo.png
