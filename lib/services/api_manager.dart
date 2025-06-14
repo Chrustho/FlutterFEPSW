@@ -86,4 +86,12 @@ class ApiManager {
   }
 
   Future<Map<String, dynamic>> fetchAlbumDetail(int albumId) {}
+
+  Future<List> fetchArtistsMostAlbums() {}
+
+  Future<List> fetchArtistsRecent() {}
+
+  Future<List> fetchArtistsMostPopular() {}
+
+  Future<Map<String, dynamic>> fetchArtistDetail(int artistId) {}
 }
