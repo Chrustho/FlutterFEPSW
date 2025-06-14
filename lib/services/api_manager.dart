@@ -86,13 +86,61 @@ class ApiManager {
     throw Exception('Errore caricamento recensioni utente');
   }
 
-  Future<Map<String, dynamic>> fetchAlbumDetail(int albumId) {}
+  Future<Map<String, dynamic>> fetchAlbumDetail(int albumId)  async {
+    final resp= await http.get(
+      Uri.parse('$_baseUrl/api/albums/$albumId'),
+      headers: await _authHeaders(),
+    );
+    if (resp.statusCode == 200) {
+      return json.decode(resp.body);
+    }
+    throw Exception('Errore caricamento dettaglio album (id=$albumId)');
+  }
 
-  Future<List<Artista>> fetchArtistsMostAlbums() {}
+  Future<List<Artista>> fetchArtistsMostAlbums() async {
+    final resp = await http.get(
+      Uri.parse('$_baseUrl/artists/by_avg_vote'),
+      headers: await _authHeaders(),
+    );
+    if (resp.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(resp.body);
+      return jsonList.map((json) => Artista.fromJson(json)).toList();
+    }
+    throw Exception('Errore caricamento artisti con i voti medi più alti');
+  }
 
-  Future<List<Artista>> fetchArtistsRecent() {}
+  Future<List<Artista>> fetchArtistsRecent() async {
+    final resp = await http.get(
+      Uri.parse('$_baseUrl/artists/recent_releases'),
+      headers: await _authHeaders(),
+    );
+    if (resp.statusCode == 200) {
+      final List<dynamic> jsonList = json.decode(resp.body);
+      return jsonList.map((json) => Artista.fromJson(json)).toList();
+    }
+    throw Exception('Errore caricamento artisti recenti');
+  }
 
-  Future<List<Artista>> fetchArtistsMostPopular() {}
+  Future<List<Artista>> fetchArtistsMostPopular() async {
+    final resp = await http.get(
+        Uri.parse('$_baseUrl/artists/most_popular'),
+        headers: await _authHeaders(),
+    );
+    if (resp.statusCode == 200) {
+    final List<dynamic> jsonList = json.decode(resp.body);
+    return jsonList.map((json) => Artista.fromJson(json)).toList();
+    }
+    throw Exception('Errore caricamento artisti popolari');
+  }
 
-  Future<Map<String, dynamic>> fetchArtistDetail(int artistId) {}
+  Future<Map<String, dynamic>> fetchArtistDetail(int artistId) async {
+    final resp = await http.get(
+      Uri.parse('$_baseUrl/api/artists/$artistId'),
+      headers: await _authHeaders(),
+    );
+    if (resp.statusCode == 200) {
+      return json.decode(resp.body);
+    }
+    throw Exception('Errore caricamento dettaglio artista (id=$artistId)');
+  }
 }
