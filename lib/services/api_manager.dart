@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:album_reviews_app/models/objects/artista.dart';
 import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
@@ -87,11 +88,11 @@ class ApiManager {
 
   Future<Map<String, dynamic>> fetchAlbumDetail(int albumId) {}
 
-  Future<List> fetchArtistsMostAlbums() {}
+  Future<List<Artista>> fetchArtistsMostAlbums() {}
 
-  Future<List> fetchArtistsRecent() {}
+  Future<List<Artista>> fetchArtistsRecent() {}
 
-  Future<List> fetchArtistsMostPopular() {}
+  Future<List<Artista>> fetchArtistsMostPopular() {}
 
   Future<Map<String, dynamic>> fetchArtistDetail(int artistId) {}
 }
