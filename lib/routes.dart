@@ -1,4 +1,6 @@
+import 'package:album_reviews_app/pages/album_detail_page.dart';
 import 'package:album_reviews_app/pages/album_page.dart';
+import 'package:album_reviews_app/pages/artist_detail_page.dart';
 import 'package:album_reviews_app/pages/artist_page.dart';
 import 'package:flutter/material.dart';
 import 'pages/splash_page.dart';       // <-- import
@@ -15,6 +17,9 @@ class Routes {
   static const String artists    = '/artists';
   static const String newReview  = '/reviews/new';
   static const String profile    = '/profile';
+  static const String artistDetail = '/artists/detail';
+  static const String albumDetail  = '/albums/detail';
+
 
   static Map<String, WidgetBuilder> get all {
     return {
@@ -25,6 +30,8 @@ class Routes {
       artists:   (ctx) => const ArtistsPage(),
       newReview: (ctx) => const ReviewCreatePage(),
       profile:   (ctx) => const ProfilePage(),
+      artistDetail: (ctx) => const ArtistDetailPage(),
+      albumDetail:  (ctx) => const AlbumDetailPage(),
     };
   }
 }

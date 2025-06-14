@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import '../utils/slug.dart';
 import '../widgets/site_scaffold.dart';
 import '../services/api_manager.dart';
+import '../routes.dart';
+
+enum ArtistFilter { mostPopular, recent, mostAlbums }
 
 class ArtistsPage extends StatefulWidget {
   const ArtistsPage({Key? key}) : super(key: key);
@@ -11,68 +15,119 @@ class ArtistsPage extends StatefulWidget {
 
 class _ArtistsPageState extends State<ArtistsPage> {
   final ApiManager _api = ApiManager();
-  List<dynamic> _allArtists = [];
-  List<dynamic> _filteredArtists = [];
-  bool _loading = true;
-  String _query = '';
+  ArtistFilter _filter = ArtistFilter.mostPopular;
+  late Future<List<dynamic>> _futureArtists;
 
   @override
   void initState() {
     super.initState();
-    _loadArtists();
+    _loadByFilter();
   }
 
-  Future<void> _loadArtists() async {
-    final list = await _api.fetchArtists();
-    setState(() {
-      _allArtists = list;
-      _filteredArtists = list;
-      _loading = false;
-    });
+  void _loadByFilter() {
+    switch (_filter) {
+      case ArtistFilter.mostPopular:
+        _futureArtists = _api.fetchArtistsMostPopular();
+        break;
+      case ArtistFilter.recent:
+        _futureArtists = _api.fetchArtistsRecent();
+        break;
+      case ArtistFilter.mostAlbums:
+        _futureArtists = _api.fetchArtistsMostAlbums();
+        break;
+    }
+    setState(() {});
   }
 
-  void _onSearchChanged(String q) {
-    setState(() {
-      _query = q;
-      _filteredArtists = _allArtists
-          .where((a) => a['name'].toString().toLowerCase().contains(q.toLowerCase()))
-          .toList();
-    });
+  void _selectFilter(ArtistFilter f) {
+    if (f == _filter) return;
+    _filter = f;
+    _loadByFilter();
   }
+
+  Widget _buildFilterButton(String label, ArtistFilter f) {
+    final selected = _filter == f;
+    return TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: selected ? Colors.teal.shade100 : null,
+        alignment: Alignment.centerLeft,
+      ),
+      onPressed: () => _selectFilter(f),
+      child: Text(label),
+    );
+  }
+
+  Widget _buildArtistImage(Map<String, dynamic> a) {
+    final slug = toSlug(a['name'] as String);
+    final path = 'assets/images/artists/$slug.jpg';
+    return CircleAvatar(
+      radius: 28,
+      backgroundImage: AssetImage(path),
+      onBackgroundImageError: (_, __) {},
+      backgroundColor: Colors.grey.shade200,
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return SiteScaffold(
-      currentRouteName: '/artists',
-      body: Column(
+      currentRouteName: Routes.artists,
+      body: Row(
         children: [
-          // Search bar
-          TextField(
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              hintText: 'Cerca artisti...',
+          // Sidebar filtri
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Text('Filtri',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ),
+                _buildFilterButton('Più popolari', ArtistFilter.mostPopular),
+                _buildFilterButton('Più recenti', ArtistFilter.recent),
+                _buildFilterButton('Più album', ArtistFilter.mostAlbums),
+              ],
             ),
-            onChanged: _onSearchChanged,
           ),
-          const SizedBox(height: 12),
+
+          const VerticalDivider(width: 1),
+
+          // Lista filtrata
           Expanded(
-            child: _loading
-                ? const Center(child: CircularProgressIndicator())
-                : _filteredArtists.isEmpty
-                ? const Center(child: Text('Nessun artista trovato.'))
-                : ListView.builder(
-              itemCount: _filteredArtists.length,
-              itemBuilder: (ctx, i) {
-                final art = _filteredArtists[i];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    title: Text(art['name']),
-                    subtitle: Text('${art['genre']}'),
-                    onTap: () {
-                      // dettaglio artista...
-                    },
-                  ),
+            child: FutureBuilder<List<dynamic>>(
+              future: _futureArtists,
+              builder: (ctx, snap) {
+                if (snap.connectionState != ConnectionState.done) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snap.hasError) {
+                  return Center(child: Text('Errore: ${snap.error}'));
+                }
+                final artists = snap.data!;
+                if (artists.isEmpty) {
+                  return const Center(child: Text('Nessun artista trovato.'));
+                }
+                return ListView.builder(
+                  itemCount: artists.length,
+                  itemBuilder: (ctx, i) {
+                    final a = artists[i];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        leading: _buildArtistImage(a),
+                        title: Text(a['name']),
+                        subtitle: Text(a['genre'] ?? ''),
+                        onTap: () => Navigator.pushNamed(
+                          context, Routes.artistDetail,
+                          arguments: a['id'],
+                        ),
+                      ),
+                    );
+
+                  },
                 );
               },
             ),

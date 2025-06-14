@@ -14,16 +14,27 @@ class ApiManager {
     };
   }
 
-  Future<List<dynamic>> fetchAlbums() async {
-    final resp = await http.get(
-      Uri.parse('$_baseUrl/api/albums'),
-      headers: await _authHeaders(),
-    );
+  /// Restituisce una pagina di album, applicando filtro e ricerca.
+  Future<List<dynamic>> fetchAlbums({
+    required String filter,    // "topRated", "recent", "mostPlayed"
+    required int page,         // 0-based
+    required int size,
+    String? search,            // testo di ricerca (titolo)
+  }) async {
+    final params = {
+      'page': page.toString(),
+      'size': size.toString(),
+      'filter': filter,
+      if (search != null && search.isNotEmpty) 'search': search,
+    };
+    final uri = Uri.parse('$_baseUrl/api/albums').replace(queryParameters: params);
+    final resp = await http.get(uri, headers: await _authHeaders());
     if (resp.statusCode == 200) {
       return json.decode(resp.body);
     }
-    throw Exception('Errore caricamento album');
+    throw Exception('Errore caricamento album (filtro=$filter, page=$page)');
   }
+
 
   Future<List<dynamic>> fetchArtists() async {
     final resp = await http.get(
@@ -73,4 +84,6 @@ class ApiManager {
     }
     throw Exception('Errore caricamento recensioni utente');
   }
+
+  Future<Map<String, dynamic>> fetchAlbumDetail(int albumId) {}
 }
