@@ -1,4 +1,6 @@
+import 'package:album_reviews_app/models/Model.dart';
 import 'package:flutter/material.dart';
+import '../models/objects/artista.dart';
 import '../utils/slug.dart';
 import '../widgets/site_scaffold.dart';
 import '../services/api_manager.dart';
@@ -14,9 +16,9 @@ class ArtistsPage extends StatefulWidget {
 }
 
 class _ArtistsPageState extends State<ArtistsPage> {
-  final ApiManager _api = ApiManager();
+  final Model _api = Model();
   ArtistFilter _filter = ArtistFilter.mostPopular;
-  late Future<List<dynamic>> _futureArtists;
+  late Future<List<Artista>> _futureArtists;
 
   @override
   void initState() {
@@ -27,13 +29,13 @@ class _ArtistsPageState extends State<ArtistsPage> {
   void _loadByFilter() {
     switch (_filter) {
       case ArtistFilter.mostPopular:
-        _futureArtists = _api.fetchArtistsMostPopular();
+        _futureArtists = _api.getMostPopularArtists();
         break;
       case ArtistFilter.recent:
-        _futureArtists = _api.fetchArtistsRecent();
+        _futureArtists = _api.getArtistsRecentReleases();
         break;
       case ArtistFilter.mostAlbums:
-        _futureArtists = _api.fetchArtistsMostAlbums();
+        _futureArtists = _api.getArtistsByAvgVote();
         break;
     }
     setState(() {});
@@ -57,8 +59,8 @@ class _ArtistsPageState extends State<ArtistsPage> {
     );
   }
 
-  Widget _buildArtistImage(Map<String, dynamic> a) {
-    final slug = toSlug(a['name'] as String);
+  Widget _buildArtistImage(Artista a) {
+    final slug = toSlug(a.nome);
     final path = 'assets/images/artists/$slug.jpg';
     return CircleAvatar(
       radius: 28,
@@ -97,7 +99,7 @@ class _ArtistsPageState extends State<ArtistsPage> {
 
           // Lista filtrata
           Expanded(
-            child: FutureBuilder<List<dynamic>>(
+            child: FutureBuilder<List<Artista>>(
               future: _futureArtists,
               builder: (ctx, snap) {
                 if (snap.connectionState != ConnectionState.done) {
@@ -118,11 +120,11 @@ class _ArtistsPageState extends State<ArtistsPage> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       child: ListTile(
                         leading: _buildArtistImage(a),
-                        title: Text(a['name']),
-                        subtitle: Text(a['genre'] ?? ''),
+                        title: Text(a.nome),
+                        subtitle: Text(a.generi.toString() ?? ''),
                         onTap: () => Navigator.pushNamed(
                           context, Routes.artistDetail,
-                          arguments: a['id'],
+                          arguments: a.id,
                         ),
                       ),
                     );

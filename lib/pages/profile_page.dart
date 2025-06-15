@@ -1,3 +1,6 @@
+import 'package:album_reviews_app/models/Model.dart';
+import 'package:album_reviews_app/models/objects/recensione_album.dart';
+import 'package:album_reviews_app/models/objects/users.dart';
 import 'package:flutter/material.dart';
 import '../widgets/site_scaffold.dart';
 import '../services/api_manager.dart';
@@ -22,8 +25,8 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SiteScaffold(
       currentRouteName: Routes.profile,
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: ApiManager().fetchProfile(),
+      body: FutureBuilder<Users>(
+        future: Model().getUserById(0),
         builder: (ctx, snap) {
           if (snap.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
@@ -36,15 +39,15 @@ class ProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${user['firstName']} ${user['lastName']}',
+                '${user.nome} ${user.cognome}',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
               const Text('Le tue ultime recensioni:'),
               const SizedBox(height: 8),
               Expanded(
-                child: FutureBuilder<List<dynamic>>(
-                  future: ApiManager().fetchMyReviews(),
+                child: FutureBuilder<List<RecensioneAlbum>>(
+                  future: Model().getRecensioniByUserId(user.id),
                   builder: (ctx2, snap2) {
                     if (snap2.connectionState != ConnectionState.done) {
                       return const Center(child: CircularProgressIndicator());
@@ -61,8 +64,8 @@ class ProfilePage extends StatelessWidget {
                       itemBuilder: (ctx3, i) {
                         final r = reviews[i];
                         return ListTile(
-                          title: Text(r['albumTitle']),
-                          subtitle: Text('${r['rating']} ★ – ${r['comment']}'),
+                          title: Text(r.album!.nome),
+                          subtitle: Text('${r.voto} ★ – ${r.testo}'),
                         );
                       },
                     );

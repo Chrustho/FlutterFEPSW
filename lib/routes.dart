@@ -24,7 +24,7 @@ class Routes {
   static Map<String, WidgetBuilder> get all {
     return {
       splash:    (ctx) => const SplashPage(),      // <-- splash entry
-      login:     (ctx) => const LoginPage(),
+      login:     (ctx) => const LoginPage(title: login),
       register:  (ctx) => const RegisterPage(),
       albums:    (ctx) => const AlbumsPage(),
       artists:   (ctx) => const ArtistsPage(),

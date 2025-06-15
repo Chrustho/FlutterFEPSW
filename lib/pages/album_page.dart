@@ -1,4 +1,6 @@
+import 'package:album_reviews_app/models/Model.dart';
 import 'package:flutter/material.dart';
+import '../models/objects/album.dart';
 import '../widgets/site_scaffold.dart';
 import '../services/api_manager.dart';
 import '../routes.dart';
@@ -30,13 +32,13 @@ class AlbumsPage extends StatefulWidget {
 }
 
 class _AlbumsPageState extends State<AlbumsPage> {
-  final ApiManager _api = ApiManager();
+  final Model _api = Model();
   final ScrollController _scrollCtrl = ScrollController();
 
   AlbumFilter _filter = AlbumFilter.topRated;
   String _search = '';
 
-  List<dynamic> _albums = [];
+  List<Album> _albums = [];
   bool _loadingPage = false;
   bool _hasMore = true;
   int _currentPage = 0;
@@ -68,12 +70,12 @@ class _AlbumsPageState extends State<AlbumsPage> {
   Future<void> _loadNextPage() async {
     setState(() => _loadingPage = true);
     try {
-      final pageData = await _api.fetchAlbums(
-        filter: _filter.apiValue,
-        page: _currentPage,
-        size: _pageSize,
-        search: _search,
-      );
+      Map<String, String> params = {
+        'pageNumber': _currentPage.toString(),
+        'pageSize': _pageSize.toString(),
+        'sortBy': "id",
+      };
+      final pageData = await _api.getAllAlbums(params);
       setState(() {
         _albums.addAll(pageData);
         _currentPage++;
@@ -110,8 +112,8 @@ class _AlbumsPageState extends State<AlbumsPage> {
     );
   }
 
-  Widget _buildAlbumImage(Map<String, dynamic> a) {
-    final slug = toSlug(a['title'] as String);
+  Widget _buildAlbumImage(Album a) {
+    final slug = toSlug(a.nome);
     final jpg = 'assets/images/albums/$slug.jpg';
     final png = 'assets/images/albums/$slug.png';
     return ClipRRect(
@@ -190,13 +192,10 @@ class _AlbumsPageState extends State<AlbumsPage> {
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         child: ListTile(
                           leading: _buildAlbumImage(a),
-                          title: Text(a['title']),
-                          subtitle: Text(a['artistName']),
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            Routes.albumDetail,
-                            arguments: a['id'],
-                          ),
+                          title: Text(a.nome),
+                          subtitle: Text(a.artista.nome),
+                          onTap: () => Navigator.of(context, rootNavigator: true)
+                              .pushNamed(Routes.albumDetail, arguments: a.id)
                         ),
                       );
                     },

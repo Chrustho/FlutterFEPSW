@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: Routes.splash,     // <-- splash come rotta iniziale
+      initialRoute: Routes.albums,     // <-- splash come rotta iniziale
       routes: Routes.all,
     );
   }

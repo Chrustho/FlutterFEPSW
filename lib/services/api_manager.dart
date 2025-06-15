@@ -3,6 +3,7 @@ import 'package:album_reviews_app/models/objects/artista.dart';
 import 'package:http/http.dart' as http;
 import 'auth_service.dart';
 
+/*
 class ApiManager {
   static const _baseUrl = 'http://localhost:8082';
   final AuthService _auth = AuthService();
@@ -86,6 +87,7 @@ class ApiManager {
     throw Exception('Errore caricamento recensioni utente');
   }
 
+
   Future<Map<String, dynamic>> fetchAlbumDetail(int albumId)  async {
     final resp= await http.get(
       Uri.parse('$_baseUrl/api/albums/$albumId'),
@@ -96,6 +98,10 @@ class ApiManager {
     }
     throw Exception('Errore caricamento dettaglio album (id=$albumId)');
   }
+
+
+
+
 
   Future<List<Artista>> fetchArtistsMostAlbums() async {
     final resp = await http.get(
@@ -109,6 +115,8 @@ class ApiManager {
     throw Exception('Errore caricamento artisti con i voti medi più alti');
   }
 
+
+
   Future<List<Artista>> fetchArtistsRecent() async {
     final resp = await http.get(
       Uri.parse('$_baseUrl/artists/recent_releases'),
@@ -119,6 +127,7 @@ class ApiManager {
       return jsonList.map((json) => Artista.fromJson(json)).toList();
     }
     throw Exception('Errore caricamento artisti recenti');
+
   }
 
   Future<List<Artista>> fetchArtistsMostPopular() async {
@@ -133,6 +142,8 @@ class ApiManager {
     throw Exception('Errore caricamento artisti popolari');
   }
 
+
+
   Future<Map<String, dynamic>> fetchArtistDetail(int artistId) async {
     final resp = await http.get(
       Uri.parse('$_baseUrl/api/artists/$artistId'),
@@ -143,4 +154,7 @@ class ApiManager {
     }
     throw Exception('Errore caricamento dettaglio artista (id=$artistId)');
   }
+
+
 }
+ */

@@ -15,6 +15,7 @@ class AppConstants {
   static const String albumsPiuVotatiPerGenere= '$albumsEndpoint/most_voted/by_genre';
   static const String albumsGetByID= '$albumsEndpoint/search/byId';
   static const String albumsGetAll= '$albumsEndpoint/paged';
+  static const String albumsGetByArtista= '$albumsEndpoint/search/by_artist';
 
   // artista end-point
   static const String artistsEndpoint= '/artists';
@@ -23,6 +24,7 @@ class AppConstants {
   static const String artistsPopularByGenre= '$artistsEndpoint/popular/by_genre';
   static const String artistsSearchByGenres= '$artistsEndpoint/search/by_genres';
   static const String artistsRecentRelease= '$artistsEndpoint/recent_releases';
+  static const String artistsSearchByAvgVote= '$artistsEndpoint/by_avg_vote';
 
   // bands end-point
   static const String bandsEndpoint = '/bands';
@@ -68,16 +70,20 @@ class AppConstants {
   static const String soloArtistByAvgVote = '$reviewsEndPoint/search/by_avg_vote';
   static const String soloArtistMostFollowed = '$reviewsEndPoint/most_followed';
 
+  // users end-point
+  static const String usersEndpoint = '/users';
+
+
   // addresses
   static final String ADDRESS_STORE_SERVER = "localhost:8082";
-  static final String ADDRESS_AUTHENTICATION_SERVER = "***";
+  static final String ADDRESS_AUTHENTICATION_SERVER = "localhost:8080";
 
   // authentication
-  static final String REALM = "***";
-  static final String CLIENT_ID = "***";
-  static final String CLIENT_SECRET = "***";
-  static final String REQUEST_LOGIN = "/auth/realms/" + REALM + "/protocol/openid-connect/token";
-  static final String REQUEST_LOGOUT = "/auth/realms/" + REALM + "/protocol/openid-connect/logout";
+  static final String REALM = "ProgettoPSW";
+  static final String CLIENT_ID = "album-app";
+  static final String CLIENT_SECRET = "IlJkz6lNn9zSgsc7af8BCcsqGlWhe5K8";
+  static final String REQUEST_LOGIN = "/realms/" + REALM + "/protocol/openid-connect/token";
+  static final String REQUEST_LOGOUT = "/realms/" + REALM + "/protocol/openid-connect/logout";
 
   // responses
   static final String RESPONSE_ERROR_MAIL_USER_ALREADY_EXISTS = "ERROR_MAIL_USER_ALREADY_EXISTS";
@@ -85,9 +91,6 @@ class AppConstants {
   // messages
   static final String MESSAGE_CONNECTION_ERROR = "connection_error";
 
-  // links
-  static final String LINK_RESET_PASSWORD = "***";
-  static final String LINK_FIRST_SETUP_PASSWORD = "***";
 
   // requests
   static final String REQUEST_SEARCH_PRODUCTS = "/products/search/by_name";

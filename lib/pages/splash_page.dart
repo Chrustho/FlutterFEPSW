@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
 import '../routes.dart';
 
 class SplashPage extends StatefulWidget {
@@ -13,14 +12,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _checkAuth();
+    _goToAlbumsPage();
   }
 
-  Future<void> _checkAuth() async {
-    final loggedIn = await AuthService().isLoggedIn();
-    final nextRoute = loggedIn ? Routes.albums : Routes.login;
-    // Sostituisce la splash con la rotta corretta
-    Navigator.pushReplacementNamed(context, nextRoute);
+  /// Navigates directly to the albums page after a brief delay
+  Future<void> _goToAlbumsPage() async {
+    // Optional: keep the splash visible for at least 1 second
+    await Future.delayed(const Duration(seconds: 1));
+    Navigator.pushReplacementNamed(context, Routes.albums);
   }
 
   @override

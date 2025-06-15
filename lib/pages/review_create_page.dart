@@ -1,3 +1,4 @@
+import 'package:album_reviews_app/models/Model.dart';
 import 'package:flutter/material.dart';
 import '../widgets/site_scaffold.dart';
 import '../services/api_manager.dart';
@@ -22,7 +23,11 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
     _formKey.currentState!.save();
     setState(() => _submitting = true);
     try {
-      await ApiManager().createReview(_albumId!, _rating, _comment);
+      await Model().creaRecensione(
+        albumId: _albumId!,
+        rating: _rating,
+        comment: _comment,
+      );
       Navigator.pop(context);
     } catch (e) {
       setState(() {
