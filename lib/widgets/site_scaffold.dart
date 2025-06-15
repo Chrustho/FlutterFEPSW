@@ -1,3 +1,4 @@
+import 'package:album_reviews_app/routes.dart';
 import 'package:flutter/material.dart';
 import 'site_app_bar.dart';
 
@@ -21,10 +22,10 @@ class SiteScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SiteAppBar(
-        onAlbums:     () => _navigate(context, '/albums'),
-        onArtists:    () => _navigate(context, '/artists'),
-        onCreateReview: () => _navigate(context, '/reviews/new'),
-        onProfile:    () => _navigate(context, '/profile'),
+        onAlbums:     () => _navigate(context, Routes.albums),
+        onArtists:    () => _navigate(context, Routes.artists),
+        onCreateReview: () => _navigate(context, Routes.newReview),
+        onProfile:    () => _navigate(context, Routes.profile),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
