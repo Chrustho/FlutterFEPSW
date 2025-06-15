@@ -139,7 +139,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   @override
   Widget build(BuildContext context) {
     return SiteScaffold(
-      currentRouteName: Routes.albums,
+      currentRouteName: "/albums",
       body: Row(
         children: [
           // ─── Sidebar filtri ───
