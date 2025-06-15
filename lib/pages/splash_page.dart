@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _checkAuth() async {
     final loggedIn = await AuthService().isLoggedIn();
-    final nextRoute = loggedIn ? Routes.albums : Routes.login;
+    final nextRoute = loggedIn ? Routes.albums : Routes.albums;
     // Sostituisce la splash con la rotta corretta
     Navigator.pushReplacementNamed(context, nextRoute);
   }
